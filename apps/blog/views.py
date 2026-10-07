@@ -20,9 +20,9 @@ def post_detail_view(request, post_id):
 
 
 def post_add_view(request):
-    if request.method == "POST":
-        form = PostForm(request.POST)
+    form = PostForm(request.POST or None)
 
+    if request.method == "POST":
         if form.is_valid():
             post = Post.objects.create(
                 title=form.cleaned_data['title'],
@@ -30,7 +30,4 @@ def post_add_view(request):
             )
             return redirect('blog:post_detail', post_id=post.id)
 
-        return render(request, 'blog/pages/post_add.html', {"form": form})
-
-    form = PostForm()
     return render(request, 'blog/pages/post_add.html', {"form": form})
