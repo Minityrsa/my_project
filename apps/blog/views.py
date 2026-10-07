@@ -1,5 +1,6 @@
 from django.shortcuts import get_object_or_404, redirect, render
 
+from blog.forms import PostForm
 from blog.models import Post
 
 
@@ -20,24 +21,16 @@ def post_detail_view(request, post_id):
 
 def post_add_view(request):
     if request.method == "POST":
-        title = request.POST['title'].strip()
-        text = request.POST['text'].strip()
+        form = PostForm(request.POST)
 
-        errors = {}
-        if not title:
-            errors['title'] = 'Заголовок поста обязателен к заполнению.'
-        if not text:
-            errors['text'] = 'Текст поста обязателен к заполнению.'
+        if form.is_valid():
+            post = Post.objects.create(
+                title=form.cleaned_data['title'],
+                text=form.cleaned_data['text']
+            )
+            return redirect('blog:post_detail', post_id=post.id)
 
-        if errors:
-            context = {
-                'errors': errors,
-                'title': title,
-                'text': text
-            }
-            return render(request, 'blog/pages/post_add.html', context)
+        return render(request, 'blog/pages/post_add.html', {"form": form})
 
-        post = Post.objects.create(title=title, text=text)
-        return redirect('blog:post_detail', post_id=post.id)
-
-    return render(request, 'blog/pages/post_add.html')
+    form = PostForm()
+    return render(request, 'blog/pages/post_add.html', {"form": form})
