@@ -28,3 +28,18 @@ def post_add_view(request):
             return redirect('blog:post_detail', post_id=post.id)
 
     return render(request, 'blog/pages/post_add.html', {"form": form})
+
+
+def post_edit_view(request, post_id):
+    post = get_object_or_404(Post, id=post_id)
+
+    if request.method == "POST":
+        form = PostForm(request.POST, instance=post)
+
+        if form.is_valid():
+            form.save()
+            return redirect("blog:post_detail", post_id=post.id)
+        return render(request, 'blog/pages/post_edit.html', context={"form": form})
+
+    form = PostForm(instance=post)
+    return render(request, 'blog/pages/post_edit.html', context={"form": form})
