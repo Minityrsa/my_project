@@ -1,27 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CryBloga</title>
-</head>
+{% extends "blog/base.html" %}
 
-<body>
-  {% comment %}
-  <header>
-    <nav>
-      <a href="/">Главная</a>
-      <a href="/posts/">Посты</a>
-    </nav>
-  </header>
-  {% endcomment %}
-  <header>
-    <nav>
-      <a href="{% url 'blog:home_page' %}">Главная</a>
-      <a href="{% url 'blog:post_list' %}">Посты</a>
-    </nav>
-  </header>
+{% block page_title %}
+  CryBloga
+{% endblock page_title %}
 
-  <h1>Главная страница</h1>
-</body>
-</html>
+{% block page_content %}
+    <h1>Главная страница</h1>
+{% endblock page_content %}

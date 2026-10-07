@@ -1,27 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
-</head>
+{% extends "blog/base.html" %}
 
-<body>
-  {% comment %}
-  <header>
-    <nav>
-      <a href="/">Главная</a>
-      <a href="/posts/">Посты</a>
-    </nav>
-  </header>
-  {% endcomment %}
-  <header>
-    <nav>
-      <a href="{% url 'blog:home_page' %}">Главная</a>
-      <a href="{% url 'blog:post_list' %}">Посты</a>
-    </nav>
-  </header>
+{% block page_title %}
+  CryBloga | Все посты
+{% endblock page_title %}
 
+{% block page_content %}
   <h1>Все посты</h1>
 
   {% comment %}
@@ -29,7 +12,7 @@
   {% endcomment %}
 
   {# Отображение постов #}
-    {% if posts %}
+  {% if posts %}
     {% for post in posts %}
       <div class="post-container" style="background-color: crimson; color: white; border: 1px solid black; margin-bottom: 10px; padding: 15px;">
         {% comment %} <h2>Заголовок поста: <a href="/posts/{{ post.id }}/">{{ post.title }}</a></h2> {% endcomment %}
@@ -46,4 +29,4 @@
   {% else %}
     <p>Постов ещё нет. Загляните позже!</p>
   {% endif %}
-</body>
+{% endblock page_content %}
