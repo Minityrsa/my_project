@@ -1,12 +1,27 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CryBloga | Все посты</title>
+  <title>Document</title>
 </head>
 
 <body>
+  {% comment %}
+  <header>
+    <nav>
+      <a href="/">Главная</a>
+      <a href="/posts/">Посты</a>
+    </nav>
+  </header>
+  {% endcomment %}
+  <header>
+    <nav>
+      <a href="{% url 'blog:home_page' %}">Главная</a>
+      <a href="{% url 'blog:post_list' %}">Посты</a>
+    </nav>
+  </header>
+
   <h1>Все посты</h1>
 
   {% comment %}
@@ -26,4 +41,3 @@
     <p>Постов ещё нет. Загляните позже!</p>
   {% endif %}
 </body>
-</html>
