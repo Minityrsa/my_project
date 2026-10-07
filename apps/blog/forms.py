@@ -1,22 +1,25 @@
 from django import forms
 
+from blog.models import Post
 
-class PostForm(forms.Form):
-  title = forms.CharField(
-    max_length=200,
-    label="Заголовок поста:",
-    widget=forms.TextInput(attrs={
-      'placeholder': "Максимальная длина 200 символов"
-    }) # Можно передавать другие атрибуты, например, "class": 'title-input'
-  ) # Можно указать: required=False
 
-  text = forms.CharField(
-    label="Текст поста:",
-    widget=forms.Textarea(attrs={
-      'rows': 3,
-      'cols': 20
-    })
-  )
+class PostForm(forms.ModelForm):
+  class Meta:
+    model = Post
+    fields = ['title', 'text']
+    widgets = {
+      'title': forms.TextInput(attrs={
+        'placeholder': "Максимальная длина 200 символов"
+      }),
+      'text': forms.Textarea(attrs={
+        'rows': 3,
+        'cols': 20
+      })
+    }
+    labels = {
+      'title': 'Заголовок поста:',
+      'text': 'Текст поста:'
+    }
 
   def clean_title(self):
     title = self.cleaned_data['title'].strip()

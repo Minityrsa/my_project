@@ -24,10 +24,7 @@ def post_add_view(request):
 
     if request.method == "POST":
         if form.is_valid():
-            post = Post.objects.create(
-                title=form.cleaned_data['title'],
-                text=form.cleaned_data['text']
-            )
+            post = form.save()
             return redirect('blog:post_detail', post_id=post.id)
 
     return render(request, 'blog/pages/post_add.html', {"form": form})
