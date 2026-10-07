@@ -1,0 +1,31 @@
+{% extends "blog/base.html" %}
+
+{% block page_title %}
+  CryBloga | Все посты
+{% endblock page_title %}
+
+{% block page_content %}
+  <h1>Все посты</h1>
+
+  {% comment %}
+    Привет, меня зовут Рашид
+  {% endcomment %}
+
+  {# Отображение постов #}
+  {% if posts %}
+    {% for post in posts %}
+      <div class="post-container" style="background-color: crimson; color: white; border: 1px solid black; margin-bottom: 10px; padding: 15px;">
+        {% comment %} <h2>Заголовок поста: <a href="/posts/{{ post.id }}/">{{ post.title }}</a></h2> {% endcomment %}
+        <h2>
+          Заголовок поста:
+          <a href="{% url 'blog:post_detail' post_id=post.id %}"> {% comment %} Можно так: post.id {% endcomment %}
+            {{ post.title }}
+          </a>
+        </h2>
+        <p>Текст поста: {{ post.text }}</p>
+        <small>Дата создания поста: {{ post.created_at|date:"d.m.Y H:i" }}</small>
+      </div>
+    {% endfor %}
+  {% else %}
+    <p>Постов ещё нет. Загляните позже!</p>
+  {% endif %}
