@@ -19,10 +19,7 @@ def post_detail_view(request, post_id):
 
 
 def post_add_view(request):
-    if request.method == "GET":
-        return render(request, 'blog/post_add.html')
-
-    elif request.method == "POST":
+    if request.method == "POST":
         title = request.POST['title'].strip()
         text = request.POST['text'].strip()
 
@@ -42,3 +39,5 @@ def post_add_view(request):
 
         post = Post.objects.create(title=title, text=text)
         return redirect('blog:post_detail', post_id=post.id)
+
+    return render(request, 'blog/post_add.html')
