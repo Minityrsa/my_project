@@ -1,5 +1,4 @@
 from django.shortcuts import get_object_or_404, redirect, render
-from django.views.decorators.http import require_POST
 
 from blog.forms import PostForm
 from blog.models import Post
@@ -75,7 +74,11 @@ def post_edit_view(request, post_id):
     )
 
 
-@require_POST
-def post_remove_view(_, post_id):
-    get_object_or_404(Post, id=post_id).delete()
-    return redirect("blog:post_list")
+def post_remove_view(request, post_id):
+    post = get_object_or_404(Post, id=post_id)
+
+    if request.method == "POST":
+        post.delete()
+        return redirect("blog:post_list")
+
+    return render(request, 'blog/pages/post_remove_confirm.html', {'post': post})
