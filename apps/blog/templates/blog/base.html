@@ -1,4 +1,5 @@
 {% load static %}
+{% load django_bootstrap5 %}
 
 <!DOCTYPE html>
 <html lang="ru">
@@ -9,10 +10,10 @@
   <link rel="icon" href="{% static 'images/favicon.png' %}">
   {% comment %} <link rel="stylesheet" href="../../../../static/css/base.css"> {% endcomment %}
   {% comment %} <link rel="stylesheet" href="/static/css/base.css"> {% endcomment %}
-  <link rel="stylesheet" href="{% static 'css/bs/bootstrap.min.css' %}">
+  {% bootstrap_css %}
   <link rel="stylesheet" href="{% static 'css/base.css' %}">
   {% block styles %}{% endblock styles %}
-  <script src="{% static 'js/bs/bootstrap.bundle.min.js' %}"></script>
+  {% bootstrap_javascript %}
 </head>
 
 <body>
