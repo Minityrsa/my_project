@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
 
 from blog.forms import PostForm
@@ -19,6 +20,7 @@ def post_detail_view(request, post_id):
     return render(request, 'blog/pages/post_detail.html', {'post': post})
 
 
+@login_required
 def post_add_view(request):
     form = PostForm(request.POST or None)
 
