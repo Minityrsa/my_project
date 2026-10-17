@@ -46,6 +46,9 @@ def post_add_view(request):
 def post_edit_view(request, post_id):
     post = get_object_or_404(Post, id=post_id)
 
+    if request.user != post.author:
+        return render(request, 'blog/pages/not_allowed.html')
+
     extra_context = {
         "title": "Редактировать пост",
         "h1": "Редактирование",
@@ -80,6 +83,9 @@ def post_edit_view(request, post_id):
 
 def post_remove_view(request, post_id):
     post = get_object_or_404(Post, id=post_id)
+
+    if request.user != post.author:
+        return render(request, 'blog/pages/not_allowed.html')
 
     if request.method == "POST":
         post.delete()
