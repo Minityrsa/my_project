@@ -22,7 +22,7 @@ def post_detail_view(request, post_id):
 
 @login_required
 def post_add_view(request):
-    form = PostForm(request.POST or None)
+    form = PostForm(request.POST or None, request.FILES or None)
 
     if request.method == "POST":
         if form.is_valid():
@@ -56,7 +56,7 @@ def post_edit_view(request, post_id):
     }
 
     if request.method == "POST":
-        form = PostForm(request.POST, instance=post)
+        form = PostForm(request.POST, request.FILES, instance=post)
 
         if form.is_valid():
             form.save()
