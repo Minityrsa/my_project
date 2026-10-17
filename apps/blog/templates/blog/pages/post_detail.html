@@ -11,6 +11,11 @@
   <h2>ID поста: {{ post.id }}</h2>
   <h3>{{ post.title }}</h3>
 
+  {% if request.user == post.author %}
+    {% comment %} Статус: {{ post.status }} {% endcomment %}
+    Статус: {{ post.get_status_display }}
+  {% endif %}
+
   {% if post.image %}
     <img src="{{ post.image.url }}" alt="Картинка поста">
   {% endif %}

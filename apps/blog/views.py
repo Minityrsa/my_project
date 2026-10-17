@@ -1,4 +1,5 @@
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect, render
 
 from blog.forms import PostForm
@@ -10,13 +11,19 @@ def home_page_view(request):
 
 
 def post_list_view(request):
-    posts = Post.objects.all()
+    posts = Post.objects.filter(status="published")
     return render(request, template_name='blog/pages/post_list.html', context={'posts': posts})
 
 
 def post_detail_view(request, post_id):
-    # post = Post.objects.get(id=post_id)
-    post = get_object_or_404(Post, id=post_id)
+    # Пост доступен, если он опубликован или если текущий пользователь является его автором
+    if request.user.is_authenticated:
+        condition = Q(id=post_id) & (Q(status="published") | Q(author=request.user))
+    else:
+        condition = Q(id=post_id) & Q(status="published")
+
+    # post = Post.objects.get(condition)
+    post = get_object_or_404(Post, condition)
     return render(request, 'blog/pages/post_detail.html', {'post': post})
 
 
