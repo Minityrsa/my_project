@@ -1,5 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.db import models
+from django.utils.text import slugify
+from unidecode import unidecode
 
 User = get_user_model()
 
@@ -11,6 +13,7 @@ class Post(models.Model):
     )
 
     title = models.CharField(max_length=200, verbose_name="Заголовок")
+    slug = models.SlugField(unique=True, editable=False)
     image = models.ImageField(upload_to="post_images/", null=True, blank=True)
     text = models.TextField(verbose_name="Текст")
     created_at = models.DateTimeField(auto_now_add=True)
@@ -26,6 +29,11 @@ class Post(models.Model):
         verbose_name = 'пост'
         verbose_name_plural = 'посты'
         # db_table = 'blog_posts'
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(unidecode(self.title))
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.title
