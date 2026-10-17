@@ -5,6 +5,11 @@ User = get_user_model()
 
 
 class Post(models.Model):
+    STATUS_CHOICES = (
+        ('published', 'Опубликован'),
+        ('draft', 'Черновик')
+    )
+
     title = models.CharField(max_length=200, verbose_name="Заголовок")
     image = models.ImageField(upload_to="post_images/", null=True, blank=True)
     text = models.TextField(verbose_name="Текст")
@@ -14,6 +19,7 @@ class Post(models.Model):
         on_delete=models.CASCADE, # Можно указать SET_NULL
         related_name='posts'
     )
+    status = models.CharField(choices=STATUS_CHOICES, default='draft', verbose_name="Статус")
 
     class Meta:
         ordering = ['-created_at']
