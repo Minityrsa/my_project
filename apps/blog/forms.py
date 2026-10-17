@@ -6,7 +6,7 @@ from blog.models import Post
 class PostForm(forms.ModelForm):
   class Meta:
     model = Post
-    fields = ['title', 'category', 'text', 'image']
+    fields = ['title', 'category', 'tags', 'text', 'image']
     widgets = {
       'title': forms.TextInput(attrs={
         'placeholder': "Максимальная длина 200 символов"
@@ -16,16 +16,19 @@ class PostForm(forms.ModelForm):
         'cols': 20
       }),
       'category': forms.Select(attrs={'class': 'form-control'}),
+      'tags': forms.SelectMultiple(attrs={'class': 'form-control'}),
       'image': forms.FileInput(attrs={'class': 'form-control'})
     }
     labels = {
       'title': 'Заголовок поста:',
       'text': 'Текст поста:',
       'category': 'Категория:',
+      'tags': 'Теги:',
       'image': 'Картинка поста'
     }
     help_texts = {
-      'category': "- можно выбрать только одну категорию"
+      'category': "- можно выбрать только одну категорию",
+      'tags': '- можно выбрать несколько тегов',
     }
 
   def clean_title(self):

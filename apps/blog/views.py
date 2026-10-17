@@ -48,6 +48,7 @@ def post_add_view(request):
             post = form.save(commit=False)
             post.author = request.user
             post.save()
+            form.save_m2m()
             return redirect('blog:post_detail', post_slug=post.slug)
 
     return render(
