@@ -1,10 +1,9 @@
 <div class="post-container">
   <h2>
     Заголовок поста:
-    <a href="{% url 'blog:post_detail' post_id=post.id %}">
+    <a href="{% url 'blog:post_detail' post_slug=post.slug %}">
       {{ post.title }}
     </a>
   </h2>
   <p>Текст поста: {{ post.text }}</p>
   <small>Дата создания поста: {{ post.created_at|date:"d.m.Y H:i" }}</small>
-</div>

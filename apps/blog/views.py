@@ -15,12 +15,12 @@ def post_list_view(request):
     return render(request, template_name='blog/pages/post_list.html', context={'posts': posts})
 
 
-def post_detail_view(request, post_id):
+def post_detail_view(request, post_slug):
     # Пост доступен, если он опубликован или если текущий пользователь является его автором
     if request.user.is_authenticated:
-        condition = Q(id=post_id) & (Q(status="published") | Q(author=request.user))
+        condition = Q(slug=post_slug) & (Q(status="published") | Q(author=request.user))
     else:
-        condition = Q(id=post_id) & Q(status="published")
+        condition = Q(slug=post_slug) & Q(status="published")
 
     # post = Post.objects.get(condition)
     post = get_object_or_404(Post, condition)
@@ -36,7 +36,7 @@ def post_add_view(request):
             post = form.save(commit=False)
             post.author = request.user
             post.save()
-            return redirect('blog:post_detail', post_id=post.id)
+            return redirect('blog:post_detail', post_slug=post.slug)
 
     return render(
         request,
@@ -67,7 +67,7 @@ def post_edit_view(request, post_id):
 
         if form.is_valid():
             form.save()
-            return redirect("blog:post_detail", post_id=post.id)
+            return redirect("blog:post_detail", post_slug=post.slug)
         return render(
             request,
             'blog/pages/post_form.html',
