@@ -6,7 +6,7 @@ from blog.models import Post
 class PostForm(forms.ModelForm):
   class Meta:
     model = Post
-    fields = ['title', 'text', 'image']
+    fields = ['title', 'category', 'text', 'image']
     widgets = {
       'title': forms.TextInput(attrs={
         'placeholder': "Максимальная длина 200 символов"
@@ -15,11 +15,13 @@ class PostForm(forms.ModelForm):
         'rows': 3,
         'cols': 20
       }),
+      'category': forms.Select(attrs={'class': 'form-control'}),
       'image': forms.FileInput(attrs={'class': 'form-control'})
     }
     labels = {
       'title': 'Заголовок поста:',
       'text': 'Текст поста:',
+      'category': 'Категория:',
       'image': 'Картинка поста'
     }
 
