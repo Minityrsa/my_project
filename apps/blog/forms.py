@@ -24,6 +24,9 @@ class PostForm(forms.ModelForm):
       'category': 'Категория:',
       'image': 'Картинка поста'
     }
+    help_texts = {
+      'category': "- можно выбрать только одну категорию"
+    }
 
   def clean_title(self):
     title = self.cleaned_data['title'].strip()
