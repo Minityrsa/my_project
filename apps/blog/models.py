@@ -1,5 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.db import models
+from django.urls import reverse
 from django.utils.text import slugify
 from unidecode import unidecode
 
@@ -36,6 +37,11 @@ class Post(models.Model):
         verbose_name_plural = 'посты'
         # db_table = 'blog_posts'
 
+    def get_absolute_url(self):
+        # return f"/posts/{self.slug}/"
+        # return reverse('blog:post_detail', args=[self.slug])
+        return reverse('blog:post_detail', kwargs={'post_slug': self.slug})
+
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(unidecode(self.title))
@@ -60,4 +66,3 @@ class Category(models.Model):
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return self.name
