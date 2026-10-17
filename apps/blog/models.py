@@ -15,6 +15,7 @@ class Post(models.Model):
     )
 
     class Meta:
+        ordering = ['-created_at']
         verbose_name = 'пост'
         verbose_name_plural = 'посты'
         # db_table = 'blog_posts'
