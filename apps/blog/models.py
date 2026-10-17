@@ -60,9 +60,13 @@ class Category(models.Model):
         verbose_name_plural = "категории"
         # db_table = "blog_categories"
 
+    def get_absolute_url(self):
+        return reverse('blog:category_posts', kwargs={'category_slug': self.slug})
+
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(unidecode(self.name))
         super().save(*args, **kwargs)
 
     def __str__(self):
+        return self.name

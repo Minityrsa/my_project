@@ -5,6 +5,7 @@
       {{ post.title }}
     </a>
   </h2>
-  <p>Категория: <a href="{% url 'blog:category_posts' post.category.slug %}">{{ post.category }}</a></p>
+  <p>Категория: <a href="{{ post.category.get_absolute_url }}">{{ post.category }}</a></p>
   <p>Текст поста: {{ post.text }}</p>
   <small>Дата создания поста: {{ post.created_at|date:"d.m.Y H:i" }}</small>
+</div>
