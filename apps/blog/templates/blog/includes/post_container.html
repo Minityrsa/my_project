@@ -5,6 +5,13 @@
       {{ post.title }}
     </a>
   </h2>
+
+  {% if request.user in post.viewed_by_users.all %}
+    <div class="badge bg-primary">
+      Просмотрено
+    </div>
+  {% endif %}
+
   <p>Категория: <a href="{{ post.category.get_absolute_url }}">{{ post.category }}</a></p>
 
   <p>
@@ -18,4 +25,3 @@
 
   <p>Текст поста: {{ post.text }}</p>
   <small>Дата создания поста: <span class="date-field">{{ post.created_at|date:"c" }}</span></small>
-</div>

@@ -74,11 +74,15 @@ class PostDetailView(DetailView):
     def get_object(self, queryset=None):
         post = super().get_object(queryset)
 
+        user = self.request.user
         session_key = f'post_{post.id}_viewed' # "post_62_viewed"
-        if not self.request.session.get(session_key, False) and post.author != self.request.user:
+        if not self.request.session.get(session_key, False) and post.author != user:
             Post.objects.filter(id=post.id).update(views=F("views") + 1)
             post.views += 1
             self.request.session[session_key] = True
+
+        if user.is_authenticated and user != post.author:
+            post.viewed_by_users.add(user) # Дубликатов записей не будет
 
         return post
 
