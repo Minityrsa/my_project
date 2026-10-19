@@ -1,7 +1,13 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect, render
-from django.views.generic import CreateView, DetailView, ListView, TemplateView
+from django.views.generic import (
+    CreateView,
+    DetailView,
+    ListView,
+    TemplateView,
+    UpdateView
+)
 
 from blog.forms import PostForm
 from blog.models import Category, Post, Tag
@@ -86,50 +92,42 @@ class PostAddView(LoginRequiredMixin, CreateView):
         return redirect('blog:post_detail', post_slug=post.slug)
 
 
-def post_edit_view(request, post_id):
-    post = get_object_or_404(Post, id=post_id)
+class PostEditView(UpdateView):
+    model = Post
+    pk_url_kwarg = 'post_id' # - потому что в url <int:post_id>, а не <int:pk>
+    form_class = PostForm
+    template_name = 'blog/pages/post_form.html'
 
-    if request.user != post.author:
-        return render(request, 'blog/pages/not_allowed.html')
+    def dispatch(self, request, *args, **kwargs):
+        # Получаем объект сразу и сохраняем в self.object
+        self.object = self.get_object()
 
-    extra_context = {
-        "title": "Редактировать пост",
-        "h1": "Редактирование",
-        "submit_button_text": "Сохранить",
-    }
+        # Проверяем автора
+        if request.user != self.object.author:
+            return render(request, 'blog/pages/not_allowed.html')
 
-    if request.method == "POST":
-        form = PostForm(request.POST, request.FILES, instance=post)
+        return super().dispatch(request, *args, **kwargs)
 
-        if form.is_valid():
-            form.save()
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
 
-            post.tags.clear()
-            tag_names = form.cleaned_data.get('tags_input')
-            for tag_name in tag_names:
-                tag, _ = Tag.objects.get_or_create(name=tag_name)
-                post.tags.add(tag)
+        context['title'] = "Редактировать пост"
+        context['h1'] = "Редактирование"
+        context['submit_button_text'] = "Сохранить"
+        context['form'].fields['tags_input'].initial = ", ".join(tag.name for tag in self.object.tags.all())
 
-            return redirect("blog:post_detail", post_slug=post.slug)
-        return render(
-            request,
-            'blog/pages/post_form.html',
-            context={
-                "form": form,
-                **extra_context,
-            }
-        )
+        return context
 
-    existing_tags = ", ".join(tag.name for tag in post.tags.all())
-    form = PostForm(instance=post, initial={'tags_input': existing_tags})
-    return render(
-        request,
-        'blog/pages/post_form.html',
-        context={
-            "form": form,
-            **extra_context,
-        }
-    )
+    def form_valid(self, form):
+        form.save()
+
+        self.object.tags.clear()
+        tag_names = form.cleaned_data.get('tags_input')
+        for tag_name in tag_names:
+            tag, _ = Tag.objects.get_or_create(name=tag_name)
+            self.object.tags.add(tag)
+
+        return redirect('blog:post_detail', post_slug=self.object.slug)
 
 
 def post_remove_view(request, post_id):
