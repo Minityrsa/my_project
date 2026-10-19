@@ -1,13 +1,14 @@
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect, render
+from django.views.generic import TemplateView
 
 from blog.forms import PostForm
 from blog.models import Category, Post, Tag
 
 
-def home_page_view(request):
-    return render(request, template_name='blog/pages/index.html')
+class HomePageView(TemplateView):
+    template_name = 'blog/pages/index.html'
 
 
 def post_list_view(request):
@@ -136,5 +137,3 @@ def post_remove_view(request, post_id):
     if request.method == "POST":
         post.delete()
         return redirect("blog:post_list")
-
-    return render(request, 'blog/pages/post_remove_confirm.html', {'post': post})
