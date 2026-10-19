@@ -15,5 +15,5 @@ urlpatterns = [
     path('posts/add/', views.PostAddView.as_view(), name='post_add'),
     path('posts/<slug:post_slug>/', views.PostDetailView.as_view(), name='post_detail'),
     path('posts/<int:post_id>/edit/', views.PostEditView.as_view(), name="post_edit"),
-    path('posts/<int:post_id>/remove/', views.post_remove_view, name="post_remove"),
+    path('posts/<int:post_id>/remove/', views.PostRemoveView.as_view(), name="post_remove"),
 ]

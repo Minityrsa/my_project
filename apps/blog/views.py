@@ -1,8 +1,10 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse_lazy
 from django.views.generic import (
     CreateView,
+    DeleteView,
     DetailView,
     ListView,
     TemplateView,
@@ -130,14 +132,17 @@ class PostEditView(UpdateView):
         return redirect('blog:post_detail', post_slug=self.object.slug)
 
 
-def post_remove_view(request, post_id):
-    post = get_object_or_404(Post, id=post_id)
+class PostRemoveView(DeleteView):
+    model = Post
+    pk_url_kwarg = 'post_id'
+    template_name = 'blog/pages/post_remove_confirm.html'
+    # context_object_name = 'post' # Необязательно
+    success_url = reverse_lazy('blog:post_list')
 
-    if request.user != post.author:
-        return render(request, 'blog/pages/not_allowed.html')
+    def dispatch(self, request, *args, **kwargs):
+        self.object = self.get_object()
 
-    if request.method == "POST":
-        post.delete()
-        return redirect("blog:post_list")
+        if request.user != self.object.author:
+            return render(request, 'blog/pages/not_allowed.html')
 
-    return render(request, 'blog/pages/post_remove_confirm.html', {'post': post})
+        return super().dispatch(request, *args, **kwargs)
