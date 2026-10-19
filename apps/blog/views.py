@@ -60,7 +60,13 @@ def post_add_view(request):
             post = form.save(commit=False)
             post.author = request.user
             post.save()
-            form.save_m2m()
+
+            tag_names = form.cleaned_data.get('tags_input')
+
+            for tag_name in tag_names:
+                tag, _ = Tag.objects.get_or_create(name=tag_name)
+                post.tags.add(tag)
+
             return redirect('blog:post_detail', post_slug=post.slug)
 
     return render(
@@ -92,6 +98,13 @@ def post_edit_view(request, post_id):
 
         if form.is_valid():
             form.save()
+
+            post.tags.clear()
+            tag_names = form.cleaned_data.get('tags_input')
+            for tag_name in tag_names:
+                tag, _ = Tag.objects.get_or_create(name=tag_name)
+                post.tags.add(tag)
+
             return redirect("blog:post_detail", post_slug=post.slug)
         return render(
             request,
@@ -102,7 +115,8 @@ def post_edit_view(request, post_id):
             }
         )
 
-    form = PostForm(instance=post)
+    existing_tags = ", ".join(tag.name for tag in post.tags.all())
+    form = PostForm(instance=post, initial={'tags_input': existing_tags})
     return render(
         request,
         'blog/pages/post_form.html',
