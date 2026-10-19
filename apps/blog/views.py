@@ -1,7 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect, render
-from django.views.generic import ListView, TemplateView
+from django.views.generic import DetailView, ListView, TemplateView
 
 from blog.forms import PostForm
 from blog.models import Category, Post, Tag
@@ -47,16 +47,20 @@ class TagPostsView(ListView):
         return context
 
 
-def post_detail_view(request, post_slug):
-    # Пост доступен, если он опубликован или если текущий пользователь является его автором
-    if request.user.is_authenticated:
-        condition = Q(slug=post_slug) & (Q(status="published") | Q(author=request.user))
-    else:
-        condition = Q(slug=post_slug) & Q(status="published")
+class PostDetailView(DetailView):
+    # model = Post # Необязательно
+    slug_url_kwarg = 'post_slug'
+    template_name = 'blog/pages/post_detail.html'
+    # context_object_name = 'post' # Необязательно
+    # slug_field = 'slug' # Необязательно
 
-    # post = Post.objects.get(condition)
-    post = get_object_or_404(Post, condition)
-    return render(request, 'blog/pages/post_detail.html', {'post': post})
+    def get_queryset(self):
+        # Пост доступен, если он опубликован или если текущий пользователь является его автором
+        if self.request.user.is_authenticated:
+            return Post.objects.filter(
+                Q(status="published") | Q(author=self.request.user)
+            )
+        return Post.objects.filter(status="published")
 
 
 @login_required
