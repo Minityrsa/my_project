@@ -22,6 +22,8 @@
     {% for post in posts %}
       {% include 'blog/includes/post_container.html' %}
     {% endfor %}
+
+    {% include "blog/includes/pagination.html" %}
   {% else %}
     <p>Постов ещё нет. Загляните позже!</p>
   {% endif %}

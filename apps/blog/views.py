@@ -23,6 +23,7 @@ class PostListView(ListView):
     queryset = Post.objects.filter(status="published")
     context_object_name = 'posts'
     template_name = 'blog/pages/post_list.html'
+    paginate_by = 3
 
 
 class CategoryPostsView(ListView):
