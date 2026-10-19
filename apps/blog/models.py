@@ -33,6 +33,11 @@ class Post(models.Model):
     )
     status = models.CharField(choices=STATUS_CHOICES, default='draft', verbose_name="Статус")
     views = models.PositiveIntegerField(default=0, verbose_name="Просмотры")
+    viewed_by_users = models.ManyToManyField(
+        User, related_name='viewed_posts',
+        blank=True,
+        verbose_name="Просмотрено пользователями"
+    )
 
     class Meta:
         ordering = ['-created_at']
