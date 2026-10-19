@@ -1,5 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models import Q
+from django.db.models import F, Q
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
 from django.views.generic import (
@@ -70,6 +70,17 @@ class PostDetailView(DetailView):
                 Q(status="published") | Q(author=self.request.user)
             )
         return Post.objects.filter(status="published")
+
+    def get_object(self, queryset=None):
+        post = super().get_object(queryset)
+
+        session_key = f'post_{post.id}_viewed' # "post_62_viewed"
+        if not self.request.session.get(session_key, False) and post.author != self.request.user:
+            Post.objects.filter(id=post.id).update(views=F("views") + 1)
+            post.views += 1
+            self.request.session[session_key] = True
+
+        return post
 
 
 class PostAddView(LoginRequiredMixin, CreateView):
