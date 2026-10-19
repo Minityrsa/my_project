@@ -1,7 +1,7 @@
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect, render
-from django.views.generic import DetailView, ListView, TemplateView
+from django.views.generic import CreateView, DetailView, ListView, TemplateView
 
 from blog.forms import PostForm
 from blog.models import Category, Post, Tag
@@ -63,34 +63,27 @@ class PostDetailView(DetailView):
         return Post.objects.filter(status="published")
 
 
-@login_required
-def post_add_view(request):
-    form = PostForm(request.POST or None, request.FILES or None)
+class PostAddView(LoginRequiredMixin, CreateView):
+    form_class = PostForm
+    extra_context = {
+        "title": "Добавить пост",
+        "h1": "Новый пост",
+        "submit_button_text": "Добавить"
+    }
+    template_name = 'blog/pages/post_form.html'
 
-    if request.method == "POST":
-        if form.is_valid():
-            post = form.save(commit=False)
-            post.author = request.user
-            post.save()
+    def form_valid(self, form):
+        post = form.save(commit=False)
+        post.author = self.request.user
+        post.save()
 
-            tag_names = form.cleaned_data.get('tags_input')
+        tag_names = form.cleaned_data.get('tags_input')
 
-            for tag_name in tag_names:
-                tag, _ = Tag.objects.get_or_create(name=tag_name)
-                post.tags.add(tag)
+        for tag_name in tag_names:
+            tag, _ = Tag.objects.get_or_create(name=tag_name)
+            post.tags.add(tag)
 
-            return redirect('blog:post_detail', post_slug=post.slug)
-
-    return render(
-        request,
-        'blog/pages/post_form.html',
-        {
-            "form": form,
-            "title": "Добавить пост",
-            "h1": "Новый пост",
-            "submit_button_text": "Добавить",
-        }
-    )
+        return redirect('blog:post_detail', post_slug=post.slug)
 
 
 def post_edit_view(request, post_id):
