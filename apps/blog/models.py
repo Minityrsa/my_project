@@ -32,6 +32,7 @@ class Post(models.Model):
         related_name='posts'
     )
     status = models.CharField(choices=STATUS_CHOICES, default='draft', verbose_name="Статус")
+    views = models.PositiveIntegerField(default=0, verbose_name="Просмотры")
 
     class Meta:
         ordering = ['-created_at']
