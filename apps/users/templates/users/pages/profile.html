@@ -23,6 +23,8 @@
         {% include 'blog/includes/post_container.html' %}
       {% endif %}
     {% endfor %}
+
+    {% include "blog/includes/pagination.html" %}
   {% else %}
     <p>Постов ещё нет. Загляните позже!</p>
   {% endif %}
