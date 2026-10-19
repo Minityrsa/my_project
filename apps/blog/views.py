@@ -3,7 +3,7 @@ from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect, render
 
 from blog.forms import PostForm
-from blog.models import Category, Post
+from blog.models import Category, Post, Tag
 
 
 def home_page_view(request):
@@ -25,6 +25,18 @@ def category_posts_view(request, category_slug):
         'posts': posts
     }
     return render(request, 'blog/pages/category_posts.html', context)
+
+
+def tag_posts_view(request, tag_slug):
+    tag = get_object_or_404(Tag, slug=tag_slug)
+    # posts = Post.objects.filter(tags=tag, status='published')
+    posts = tag.posts.filter(status='published')
+
+    context = {
+        'tag': tag,
+        'posts': posts
+    }
+    return render(request, 'blog/pages/tag_posts.html', context)
 
 
 def post_detail_view(request, post_slug):
