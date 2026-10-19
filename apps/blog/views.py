@@ -17,16 +17,19 @@ class PostListView(ListView):
     template_name = 'blog/pages/post_list.html'
 
 
-def category_posts_view(request, category_slug):
-    category = get_object_or_404(Category, slug=category_slug)
-    # posts = Post.objects.filter(category=category, status='published')
-    posts = category.posts.filter(status='published')
+class CategoryPostsView(ListView):
+    context_object_name = 'posts'
+    template_name = 'blog/pages/category_posts.html'
 
-    context = {
-        'category': category,
-        'posts': posts
-    }
-    return render(request, 'blog/pages/category_posts.html', context)
+    def get_queryset(self):
+        self.category = get_object_or_404(Category, slug=self.kwargs['category_slug'])
+        # return Post.objects.filter(category=self.category, status='published')
+        return self.category.posts.filter(status='published')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['category'] = self.category
+        return context
 
 
 def tag_posts_view(request, tag_slug):
